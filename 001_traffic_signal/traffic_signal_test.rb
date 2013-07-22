@@ -14,7 +14,7 @@ describe TrafficSignal do
     light_colors = %w(red yellow green)
     watcher = SignalWatcher.new(@traffic_signal)
     light_colors.each do |light_color|
-      watcher.expects(:update).with(light_color)
+      watcher.expects(:update).with(@traffic_signal)
     end
     @traffic_signal.run
   end

@@ -3,28 +3,36 @@ require 'observer'
 class TrafficSignal
   include Observable
 
-  attr_reader :light_color
+  attr_accessor :light_color
 
   def initialize
-    @light_color = 'red'
+    light_color = TrafficLight.red
   end
 
   def run
-    @light_color = 'green'
-    changed_and_notify
+    change_light_color(TrafficLight.green)
     sleep 3
-    @light_color = 'yellow'
-    changed_and_notify
+    change_light_color(TrafficLight.yellow)
     sleep 1
-    @light_color = 'red'
-    changed_and_notify
+    change_light_color(TrafficLight.red)
   end
 
   private
 
+  def change_light_color(color)
+    light_color = color
+    changed_and_notify
+  end
+
   def changed_and_notify
     changed
-    notify_observers(@light_color)
+    notify_observers(self)
+  end
+
+  TrafficLight = Struct.new(:color) do
+    def self.red; TrafficLight.new('red'); end
+    def self.green; TrafficLight.new('green'); end
+    def self.yellow; TrafficLight.new('yellow'); end
   end
 end
 
@@ -33,7 +41,7 @@ class SignalWatcher
     signal.add_observer(self)
   end
 
-  def update(light_color)
-    puts "Signal is now #{light_color}"
+  def update(signal)
+    puts "Signal is now #{signal.light_color}"
   end
 end
