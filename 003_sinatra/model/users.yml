@@ -1,0 +1,10 @@
+james:
+  name: James Hwang
+  dob: 1-1-2013
+  address: 123 Main st.
+  access_rights: admin
+nhuanh:
+  name: Nhu Anh Nguyen
+  dob: 1-2-2013
+  address: 123 Main st.
+  access_rights: normal
