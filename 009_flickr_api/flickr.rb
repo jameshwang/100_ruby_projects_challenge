@@ -7,25 +7,32 @@ require 'json'
 SEARCH_URL = "http://api.flickr.com/services/rest"
 
 class PicturePicker
-  def self.pull_pictures(limit = 5)
+  def initialize(lat = 37.7577, lon = -122.437)
+    @lat = lat
+    @lon = lon
+  end
+  def pull_pictures(text, limit = 10)
     config = YAML.load(File.open('config.yml'))
     options = {
       method: "flickr.photos.search",
+      text: text,
       api_key: config['api_key'],
-      lat: 37.7577,
-      lon: -122.437,
+      lat: @lat,
+      lon: @lon,
       per_page: limit,
       format: "json",
       nojsoncallback: 1
     }
     photos = JSON.parse(RestClient.get(SEARCH_URL, params: options))["photos"]["photo"]
     photos.map do |photo|
-      "http://farm#{photo["farm"]}.staticflickr.com/#{photo["server"]}/#{photo["id"]}_#{photo["secret"]}_m.jpg"
+      "http://farm#{photo["farm"]}.staticflickr.com/#{photo["server"]}/#{photo["id"]}_#{photo["secret"]}_s.jpg"
     end
   end
 end
 
 get "/" do
+  puts params
   content_type :json
-  PicturePicker.pull_pictures.to_json
+  flickr_pictures = PicturePicker.new
+  flickr_pictures.pull_pictures(params['text']).to_json
 end
