@@ -1,15 +1,14 @@
 require 'rest-client'
 require 'json'
 require 'yaml'
-
-URL = "http://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}_[mstzb].jpg"
+require 'sinatra'
+require 'json'
 
 SEARCH_URL = "http://api.flickr.com/services/rest"
 
-config = YAML.load(File.open('config.yml'))
-
 class PicturePicker
   def self.pull_pictures(limit = 5)
+    config = YAML.load(File.open('config.yml'))
     options = {
       method: "flickr.photos.search",
       api_key: config['api_key'],
@@ -24,4 +23,9 @@ class PicturePicker
       "http://farm#{photo["farm"]}.staticflickr.com/#{photo["server"]}/#{photo["id"]}_#{photo["secret"]}_m.jpg"
     end
   end
+end
+
+get "/" do
+  content_type :json
+  PicturePicker.pull_pictures.to_json
 end
