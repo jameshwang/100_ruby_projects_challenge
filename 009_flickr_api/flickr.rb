@@ -1,8 +1,10 @@
+require 'rubygems'
 require 'rest-client'
 require 'json'
 require 'yaml'
 require 'sinatra'
 require 'json'
+
 
 SEARCH_URL = "http://api.flickr.com/services/rest"
 
@@ -35,4 +37,9 @@ get "/" do
   content_type :json
   flickr_pictures = PicturePicker.new
   flickr_pictures.pull_pictures(params['text']).to_json
+end
+
+get "/pictures" do
+  @flickr_pictures = PicturePicker.new.pull_pictures(params['text'])
+  haml :pictures, :format => :html5
 end
