@@ -1,8 +1,7 @@
 require 'minitest/autorun'
-require 'date'
+
 require_relative '../spec_helper_lite'
-stub_module 'ActiveModel::Conversion'
-stub_module 'ActiveModel::Naming'
+require 'active_model'
 
 require_relative '../../app/models/post'
 
@@ -19,6 +18,18 @@ describe Post do
   it "supports reading and writing a title" do
     @it.title = "foo"
     @it.title.must_equal "foo"
+  end
+
+  it "is not valid with a blank title" do
+    [nil, "", " "].each do |bad_title|
+      @it.title = bad_title
+      refute @it.valid?
+    end
+  end
+
+  it "is valid with a non-blank title" do
+    @it.title = "x"
+    assert @it.valid?
   end
 
   it "supports reading and writing a post body" do
@@ -49,8 +60,22 @@ describe Post do
     end
 
     it "adds the post to the blog" do
+      @it.title = "Hello World"
       @blog.expect :add_entry, nil, [@it]
       @it.publish
+    end
+
+    describe "given an invalid post" do
+      before do @it.title = nil end
+
+      it "won't add the post to the blog" do
+        dont_allow(@blog).add_entry
+        @it.publish
+      end
+
+      it "returns false" do
+        refute(@it.publish)
+      end
     end
   end
 
@@ -63,6 +88,7 @@ describe Post do
 
     describe "after publishing" do
       before do
+        @it.title = "Hello World"
         @clock = stub!
         @now = DateTime.parse("2011-09-11T02:56")
         stub(@clock).now(){@now}
