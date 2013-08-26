@@ -1,9 +1,8 @@
-require 'delegate'
+require_relative 'exhibit'
 
 class PicturePostExhibit < SimpleDelegator
-  def initialize(model, context)
-    @context = context
-    super(model)
+  def self.applicable_to?(object)
+    object.is_a?(Post) && object.picture?
   end
 
   def render_body
