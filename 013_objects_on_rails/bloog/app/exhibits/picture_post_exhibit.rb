@@ -1,6 +1,6 @@
 require_relative 'exhibit'
 
-class PicturePostExhibit < SimpleDelegator
+class PicturePostExhibit < Exhibit
   def self.applicable_to?(object)
     object.is_a?(Post) && object.picture?
   end

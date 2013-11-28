@@ -21,7 +21,7 @@ describe Crew do
     end
   end
 
-  it "#clean_plane" do
+  it "#clean_plane should assign the plane's clean to be true" do
     @plane.expect(:clean=, true, [true])
     @crew.clean_plane(@plane)
     @plane.verify

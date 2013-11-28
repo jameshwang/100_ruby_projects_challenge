@@ -1,3 +1,7 @@
+# Objects source and destination are playing roles
+# The Transferrer module is called a Methodful Role which adds methods to the data objects
+# The MoneyTransfer class is called the Methodless Role
+
 class MoneyTransfer
   def initialize(source, destination)
     @source = source
